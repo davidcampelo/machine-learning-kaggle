@@ -1,5 +1,7 @@
 # Import the Pandas library
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 import numpy as np
 from sklearn import tree
 def log(msg):
@@ -42,6 +44,14 @@ test["Age"] = test["Age"].fillna(test["Age"].median())
 
 
 log("Now let's do some ML...")
+# One way to quickly see the result of your decision tree is to 
+# see the importance of the features that are included. This is 
+# done by requesting the .feature_importances_ attribute of your 
+# tree object. Another quick metric is the mean accuracy that you 
+# can compute using the .score() function with features_one and 
+# target as arguments.
+
+
 
 # Print the train data to see the available features
 
@@ -90,5 +100,22 @@ print(my_tree_two.feature_importances_)
 log("Show the score of the included features - PClass, Sex, Age, Fare, SibSp, Parch, Embarked")
 print(my_tree_two.score(features_two, target))
 
+
+# Create train_two with the newly defined feature
+train_two = train.copy()
+train_two["family_size"] = train_two["SibSp"] + train_two["Parch"] + 1
+
+# Create a new feature set and add the new feature
+features_three = train_two[["Pclass", "Sex", "Age", "Fare", "SibSp", "Parch", "family_size"]].values
+
+# Define the tree classifier, then fit the model
+my_tree_three = tree.DecisionTreeClassifier()
+my_tree_three = my_tree_three.fit(features_three, target)
+
+# #Print the score of the new decison tree
+log("Show the importance of the included features - PClass, Sex, Age, Fare, SibSp, Parch, family_size")
+print(my_tree_three.feature_importances_)
+log("Show the score of the included features - PClass, Sex, Age, Fare, SibSp, Parch, family_size")
+print(my_tree_three.score(features_three, target))
 
 
