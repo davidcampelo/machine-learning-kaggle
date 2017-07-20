@@ -59,7 +59,7 @@ target = train["Survived"].values
 forest = RandomForestClassifier(max_depth = 10, min_samples_split=2, n_estimators = 100, random_state = 1)
 my_forest = forest.fit(features_forest, target)
 
-# Print the score of the fitted random forest
+log("Print the score of the fitted random forest")
 print(my_forest.score(features_forest, target))
 
 # Compute predictions on our test set features then print the length of the prediction vector
@@ -68,3 +68,19 @@ test_features = test[["Pclass", "Age", "Sex", "Fare", "SibSp", "Parch", "Embarke
 pred_forest = my_forest.predict(test_features)
 print(len(pred_forest))
 
+# Create a new array with the added features: features_two
+features_two = train[["Pclass","Age","Sex","Fare", "SibSp", "Parch", "Embarked"]].values
+
+#Control overfitting by setting "max_depth" to 10 and "min_samples_split" to 5 : my_tree_two
+max_depth = 10
+min_samples_split = 5
+my_tree_two = tree.DecisionTreeClassifier(max_depth = 10, min_samples_split = 5, random_state = 1)
+my_tree_two = my_tree_two.fit(features_two, target)
+
+log("Request and print the `.feature_importances_` attribute")
+print(my_tree_two.feature_importances_)
+print(my_forest.feature_importances_)
+
+log("Compute and print the mean accuracy score for both models")
+print(my_tree_two.score(features_two, target))
+print(my_forest.score(features_two, target))
