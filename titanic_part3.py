@@ -15,7 +15,7 @@ test_url = "http://s3.amazonaws.com/assets.datacamp.com/course/Kaggle/test.csv"
 test = pd.read_csv(test_url)
 
 #####################################################################################
-# Cleaning up Sex Embarked and Age columns 
+# Cleaning up Sex, Embarked, Age and Fare columns 
 
 # Convert the male and female groups to integer form
 # male = 0
@@ -42,8 +42,29 @@ test["Embarked"][test["Embarked"] == "Q"] = 2
 # Set the median value for Age if none is provided
 train["Age"] = train["Age"].fillna(train["Age"].median())
 test["Age"] = test["Age"].fillna(test["Age"].median())
+train["Fare"] = train["Fare"].fillna(train["Fare"].median())
+test["Fare"] = test["Fare"].fillna(test["Fare"].median())
 
 #####################################################################################
 # Now let's do some ML...
 
+# Import the `RandomForestClassifier`
+from sklearn.ensemble import RandomForestClassifier
+
+# We want the Pclass, Age, Sex, Fare,SibSp, Parch, and Embarked variables
+features_forest = train[["Pclass", "Age", "Sex", "Fare", "SibSp", "Parch", "Embarked"]].values
+target = train["Survived"].values
+
+# Building and fitting my_forest
+forest = RandomForestClassifier(max_depth = 10, min_samples_split=2, n_estimators = 100, random_state = 1)
+my_forest = forest.fit(features_forest, target)
+
+# Print the score of the fitted random forest
+print(my_forest.score(features_forest, target))
+
+# Compute predictions on our test set features then print the length of the prediction vector
+test_features = test[["Pclass", "Age", "Sex", "Fare", "SibSp", "Parch", "Embarked"]].values
+
+pred_forest = my_forest.predict(test_features)
+print(len(pred_forest))
 
